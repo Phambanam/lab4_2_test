@@ -4,10 +4,8 @@ import android.content.pm.ActivityInfo
 import androidx.lifecycle.Lifecycle
 import androidx.test.espresso.Espresso.*
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -62,7 +60,7 @@ class NavigationTest {
 
 
     @Test
-    fun buttonsExists() {
+    fun testButtonsExists() {
         openAbout()
         onView(withId(R.id.bnToFirst)).check(doesNotExist())
         onView(withId(R.id.bnToSecond)).check(doesNotExist())
@@ -85,7 +83,7 @@ class NavigationTest {
     }
 
     @Test
-    fun fragmentsExists() {
+    fun testFragmentsExists() {
         onView(withId(R.id.fragment1)).check(matches(isDisplayed()))
         onView(withId(R.id.bnToSecond)).perform(click())
         onView(withId(R.id.fragment2)).check(matches(isDisplayed()))
@@ -104,7 +102,7 @@ class NavigationTest {
 
 
     @Test
-    fun upNavigation() {
+    fun testUpNavigation() {
         onView(withId(R.id.fragment1)).check(matches(isDisplayed()))
         onView(withId(R.id.bnToSecond)).check(matches(isDisplayed()))
 
@@ -162,18 +160,18 @@ class NavigationTest {
     }
 
     @Test
-    fun rotation() {
+    fun testRotation() {
         openAbout()
-        rotationAbout()
+        testRotationAbout()
         pressBack()
-        rotation1()
+        testRotation1()
         onView(withId(R.id.bnToSecond)).perform(click())
-        rotation2()
+        testRotation2()
         onView(withId(R.id.bnToThird)).perform(click())
-        rotation3()
+        testRotation3()
     }
 
-    private fun rotationAbout(){
+    private fun testRotationAbout(){
         onView(withId(R.id.tvAbout)).check(matches(isDisplayed()))
         onView(withId(R.id.activity_about)).check(matches(isDisplayed()))
 
@@ -191,7 +189,7 @@ class NavigationTest {
         Thread.sleep(1000)
     }
 
-    private fun rotation1(){
+    private fun testRotation1(){
         onView(withId(R.id.fragment1)).check(matches(isDisplayed()))
         onView(withId(R.id.bnToSecond)).check(matches(isDisplayed()))
 
@@ -209,7 +207,7 @@ class NavigationTest {
         Thread.sleep(1000)
     }
 
-    private fun rotation2(){
+    private fun testRotation2(){
         onView(withId(R.id.fragment2)).check(matches(isDisplayed()))
         onView(withId(R.id.bnToFirst)).check(matches(isDisplayed()))
         onView(withId(R.id.bnToThird)).check(matches(isDisplayed()))
@@ -229,7 +227,7 @@ class NavigationTest {
         Thread.sleep(1000)
     }
 
-    private fun rotation3() {
+    private fun testRotation3() {
         onView(withId(R.id.fragment3)).check(matches(isDisplayed()))
         onView(withId(R.id.bnToFirst)).check(matches(isDisplayed()))
         onView(withId(R.id.bnToSecond)).check(matches(isDisplayed()))
