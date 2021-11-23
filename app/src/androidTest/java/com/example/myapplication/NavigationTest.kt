@@ -23,14 +23,71 @@ import org.junit.runner.RunWith
 class NavigationTest {
     @get:Rule
     val activityScenarioRule = ActivityScenarioRule(MainActivity::class.java)
+
     @Test
     fun testAbout() {
         openAbout()
         onView(withId(R.id.activity_about))
             .check(matches(isDisplayed()))
     }
+
+    private fun existFr1() {
+        //check exists fr1
+        onView(withId(R.id.fragment1)).check(matches(isDisplayed()))
+        onView(withId(R.id.fragment2)).check(doesNotExist())
+        onView(withId(R.id.fragment3)).check(doesNotExist())
+        onView(withId(R.id.bnToFirst)).check(doesNotExist())
+        onView(withId(R.id.bnToSecond)).check(matches(isDisplayed()))
+        onView(withId(R.id.bnToThird)).check(doesNotExist())
+        onView(withId(R.id.nav_view)).check(matches(isDisplayed()))
+    }
+
+    private fun existFr2() {
+        onView(withId(R.id.fragment1)).check(doesNotExist())
+        onView(withId(R.id.fragment2)).check(matches(isDisplayed()))
+        onView(withId(R.id.fragment3)).check(doesNotExist())
+        onView(withId(R.id.bnToFirst)).check(matches(isDisplayed()))
+        onView(withId(R.id.bnToSecond)).check(doesNotExist())
+        onView(withId(R.id.bnToThird)).check(matches(isDisplayed()))
+        onView(withId(R.id.nav_view)).check(matches(isDisplayed()))
+    }
+
+    private fun existFr3() {
+        onView(withId(R.id.fragment1)).check(doesNotExist())
+        onView(withId(R.id.fragment2)).check(doesNotExist())
+        onView(withId(R.id.fragment3)).check(matches(isDisplayed()))
+        onView(withId(R.id.bnToFirst)).check(matches(isDisplayed()))
+        onView(withId(R.id.bnToSecond)).check(matches(isDisplayed()))
+        onView(withId(R.id.bnToThird)).check(doesNotExist())
+        onView(withId(R.id.nav_view)).check(matches(isDisplayed()))
+    }
+
+    private fun existActivityAbout() {
+        onView(withId(R.id.fragment1)).check(doesNotExist())
+        onView(withId(R.id.fragment2)).check(doesNotExist())
+        onView(withId(R.id.fragment3)).check(doesNotExist())
+        onView(withId(R.id.bnToFirst)).check(doesNotExist())
+        onView(withId(R.id.bnToSecond)).check(doesNotExist())
+        onView(withId(R.id.bnToThird)).check(doesNotExist())
+        onView(withId(R.id.nav_view)).check(doesNotExist())
+        onView(withId(R.id.tvAbout))
+    }
     @Test
-    fun testBackStack(){
+    fun testExists() {
+        existFr1()
+        onView(withId(R.id.bnToSecond)).perform(click())
+        //check exists fr2
+        existFr2()
+        onView(withId(R.id.bnToThird)).perform(click())
+        //check exists fr3
+        existFr3()
+        openAbout()
+        //check exists fr about
+        existActivityAbout()
+    }
+
+    @Test
+    fun testBackStack() {
         onView(withId(R.id.bnToSecond)).perform(click())
         openAbout()
         pressBack()
@@ -60,34 +117,23 @@ class NavigationTest {
 
 
     @Test
-    fun testButtonsExists() {
-        openAbout()
-        onView(withId(R.id.bnToFirst)).check(doesNotExist())
-        onView(withId(R.id.bnToSecond)).check(doesNotExist())
-        onView(withId(R.id.bnToThird)).check(doesNotExist())
-
-        onView(withId(R.id.bnToFirst)).check(doesNotExist())
-        onView(withId(R.id.bnToSecond)).check(matches(isDisplayed()))
-        onView(withId(R.id.bnToThird)).check(doesNotExist())
-
-        onView(withId(R.id.bnToSecond)).perform(click())
-        onView(withId(R.id.bnToSecond)).check(doesNotExist())
-        onView(withId(R.id.bnToFirst)).check(matches(isDisplayed()))
-        onView(withId(R.id.bnToThird)).check(matches(isDisplayed()))
-
-        onView(withId(R.id.bnToThird)).perform(click())
-        onView(withId(R.id.bnToThird)).check(doesNotExist())
-        onView(withId(R.id.bnToSecond)).check(matches(isDisplayed()))
-        onView(withId(R.id.bnToFirst)).check(matches(isDisplayed()))
-
-    }
-
-    @Test
     fun testFragmentsExists() {
+        openAbout()
+        onView(withId(R.id.tvAbout)).check(matches(isDisplayed()))
+        onView(withId(R.id.activity_about)).check(matches(isDisplayed()))
+        pressBack()
         onView(withId(R.id.fragment1)).check(matches(isDisplayed()))
         onView(withId(R.id.bnToSecond)).perform(click())
+        openAbout()
+        onView(withId(R.id.tvAbout)).check(matches(isDisplayed()))
+        onView(withId(R.id.activity_about)).check(matches(isDisplayed()))
+        pressBack()
         onView(withId(R.id.fragment2)).check(matches(isDisplayed()))
         onView(withId(R.id.bnToThird)).perform(click())
+        openAbout()
+        onView(withId(R.id.tvAbout)).check(matches(isDisplayed()))
+        onView(withId(R.id.activity_about)).check(matches(isDisplayed()))
+        pressBack()
         onView(withId(R.id.fragment3)).check(matches(isDisplayed()))
         openAbout()
         onView(withId(R.id.tvAbout)).check(matches(isDisplayed()))
@@ -103,61 +149,37 @@ class NavigationTest {
 
     @Test
     fun testUpNavigation() {
-        onView(withId(R.id.fragment1)).check(matches(isDisplayed()))
-        onView(withId(R.id.bnToSecond)).check(matches(isDisplayed()))
-
+        existFr1()
         openAbout()
-        onView(withId(R.id.tvAbout)).check(matches(isDisplayed()))
-        onView(withId(R.id.activity_about)).check(matches(isDisplayed()))
-
+        existActivityAbout()
         onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
-        onView(withId(R.id.fragment1)).check(matches(isDisplayed()))
-        onView(withId(R.id.bnToSecond)).check(matches(isDisplayed()))
-
         onView(withId(R.id.bnToSecond)).perform(click())
-        onView(withId(R.id.fragment2)).check(matches(isDisplayed()))
-        onView(withId(R.id.bnToFirst)).check(matches(isDisplayed()))
-        onView(withId(R.id.bnToThird)).check(matches(isDisplayed()))
-
+        existFr2()
         openAbout()
-        onView(withId(R.id.tvAbout)).check(matches(isDisplayed()))
-        onView(withId(R.id.activity_about)).check(matches(isDisplayed()))
-
+        existActivityAbout()
         onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
-        onView(withId(R.id.fragment2)).check(matches(isDisplayed()))
-        onView(withId(R.id.bnToFirst)).check(matches(isDisplayed()))
-        onView(withId(R.id.bnToThird)).check(matches(isDisplayed()))
-
+        existFr2()
         onView(withId(R.id.bnToThird)).perform(click())
-        onView(withId(R.id.fragment3)).check(matches(isDisplayed()))
-        onView(withId(R.id.bnToFirst)).check(matches(isDisplayed()))
-        onView(withId(R.id.bnToSecond)).check(matches(isDisplayed()))
-
+        existFr3()
         openAbout()
-        onView(withId(R.id.tvAbout)).check(matches(isDisplayed()))
-        onView(withId(R.id.activity_about)).check(matches(isDisplayed()))
-
+        existActivityAbout()
         onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
-        onView(withId(R.id.fragment3)).check(matches(isDisplayed()))
-        onView(withId(R.id.bnToFirst)).check(matches(isDisplayed()))
-        onView(withId(R.id.bnToSecond)).check(matches(isDisplayed()))
-
+        existFr3()
         onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
-        onView(withId(R.id.fragment2)).check(matches(isDisplayed()))
-        onView(withId(R.id.bnToFirst)).check(matches(isDisplayed()))
-        onView(withId(R.id.bnToThird)).check(matches(isDisplayed()))
-
+        existFr2()
         onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
-        onView(withId(R.id.fragment1)).check(matches(isDisplayed()))
-        onView(withId(R.id.bnToSecond)).check(matches(isDisplayed()))
+        existFr1()
 
         try {
-            onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
+            onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(
+                click()
+            )
             assert(false)
         } catch (NoActivityResumedException: Exception) {
             assert(true)
         }
     }
+
 
     @Test
     fun testRotation() {
@@ -171,17 +193,15 @@ class NavigationTest {
         testRotation3()
     }
 
-    private fun testRotationAbout(){
-        onView(withId(R.id.tvAbout)).check(matches(isDisplayed()))
-        onView(withId(R.id.activity_about)).check(matches(isDisplayed()))
+    private fun testRotationAbout() {
+        existActivityAbout()
 
         activityScenarioRule.scenario.onActivity { activity ->
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
         }
         Thread.sleep(1000)
 
-        onView(withId(R.id.tvAbout)).check(matches(isDisplayed()))
-        onView(withId(R.id.activity_about)).check(matches(isDisplayed()))
+        existActivityAbout()
 
         activityScenarioRule.scenario.onActivity { activity ->
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
@@ -189,17 +209,15 @@ class NavigationTest {
         Thread.sleep(1000)
     }
 
-    private fun testRotation1(){
-        onView(withId(R.id.fragment1)).check(matches(isDisplayed()))
-        onView(withId(R.id.bnToSecond)).check(matches(isDisplayed()))
+    private fun testRotation1() {
+        existFr1()
 
         activityScenarioRule.scenario.onActivity { activity ->
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
         }
         Thread.sleep(1000)
 
-        onView(withId(R.id.fragment1)).check(matches(isDisplayed()))
-        onView(withId(R.id.bnToSecond)).check(matches(isDisplayed()))
+        existFr1()
 
         activityScenarioRule.scenario.onActivity { activity ->
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
@@ -207,19 +225,15 @@ class NavigationTest {
         Thread.sleep(1000)
     }
 
-    private fun testRotation2(){
-        onView(withId(R.id.fragment2)).check(matches(isDisplayed()))
-        onView(withId(R.id.bnToFirst)).check(matches(isDisplayed()))
-        onView(withId(R.id.bnToThird)).check(matches(isDisplayed()))
+    private fun testRotation2() {
+        existFr2()
 
         activityScenarioRule.scenario.onActivity { activity ->
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
         }
         Thread.sleep(1000)
 
-        onView(withId(R.id.fragment2)).check(matches(isDisplayed()))
-        onView(withId(R.id.bnToFirst)).check(matches(isDisplayed()))
-        onView(withId(R.id.bnToThird)).check(matches(isDisplayed()))
+        existFr2()
 
         activityScenarioRule.scenario.onActivity { activity ->
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
@@ -228,18 +242,14 @@ class NavigationTest {
     }
 
     private fun testRotation3() {
-        onView(withId(R.id.fragment3)).check(matches(isDisplayed()))
-        onView(withId(R.id.bnToFirst)).check(matches(isDisplayed()))
-        onView(withId(R.id.bnToSecond)).check(matches(isDisplayed()))
+        existFr3()
 
         activityScenarioRule.scenario.onActivity { activity ->
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
         }
         Thread.sleep(1000)
 
-        onView(withId(R.id.fragment3)).check(matches(isDisplayed()))
-        onView(withId(R.id.bnToFirst)).check(matches(isDisplayed()))
-        onView(withId(R.id.bnToSecond)).check(matches(isDisplayed()))
+        existFr3()
 
         activityScenarioRule.scenario.onActivity { activity ->
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
